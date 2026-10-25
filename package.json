@@ -1,0 +1,36 @@
+{
+  "name": "dsh-agent-flight-recorder",
+  "version": "0.1.0",
+  "description": "Live runtime health for DeepSeek Harness agents: loop detection, runtime_health tool, Runtime Health panel and a per-turn health summary for the user and the model.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Mathieu Portmann",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MathieuPortmann/dsh-agent-flight-recorder.git"
+  },
+  "homepage": "https://github.com/MathieuPortmann/dsh-agent-flight-recorder#readme",
+  "bugs": {
+    "url": "https://github.com/MathieuPortmann/dsh-agent-flight-recorder/issues"
+  },
+  "keywords": ["dsh-plugin", "deepseek-harness", "agent", "observability", "loop-detection"],
+  "engines": { "node": ">=22.6" },
+  "scripts": {
+    "test": "node --test \"tests/*.test.mjs\""
+  },
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "files": ["index.js", "client.js", "lib", "cordis.patch.yml", "locale/*.json", "SPEC.md", "README.md", "LICENSE"],
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": ["@deepseek-ai/dsh-client-ui-conversation", "@deepseek-ai/dsh-client-ui-chat", "@deepseek-ai/dsh-client-locale"]
+    }
+  }
+}

@@ -1,0 +1,4 @@
+- insert:
+    - id: agent-flight-recorder
+      name: 'dsh-agent-flight-recorder'
+      config: {}
