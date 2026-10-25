@@ -33,7 +33,7 @@ dsh plugin --profile web add dsh-agent-flight-recorder
 dsh plugin --profile web add github:MathieuPortmann/dsh-agent-flight-recorder
 ```
 
-Restart the profile afterwards. Requires Node >= 22.6 and DSH 0.2.x.
+Restart the profile afterwards. Requires Node `^22.19.0 || >=24` and DSH `>=0.2.0-rc.2 <0.3.0` (see [Compatibility](#compatibility)).
 
 Optional companion: [`@beibeihk/dsh-agent-observability`](https://www.npmjs.com/package/@beibeihk/dsh-agent-observability)
 (durable per-session recorder, `/observe` report). This plugin does not depend on it.
@@ -52,9 +52,42 @@ Row `agent-flight-recorder` in your profile's `cordis.patch.yml`; every key is o
 | `turnSummaryToModel` | true | send the per-turn summary to the model |
 | `liveAlerts` | true | add alerts to tool results |
 
+## Compatibility
+
+| Component | Supported |
+|---|---|
+| Node.js | `^22.19.0 \|\| >=24.0.0` (`engines.node`) |
+| DSH | `>=0.2.0-rc.2 <0.3.0`; declared as an optional `peerDependency` on `@deepseek-ai/dsh-tools`, the only DSH package the plugin imports directly |
+| Platform | Linux (tested); pure JavaScript, no native addon |
+
+Tested with DSH `0.2.0-rc.2` on Node 22.23 (see [Verification](#verification)).
+
 ## Permissions and external services
 
-None. No network access, no files written, no dependency outside the libraries shipped with DSH.
+| Capability | Used? | Detail |
+|---|---|---|
+| Files | no | nothing is read from or written to disk by the plugin itself; its state lives in the DSH session log |
+| Network | no | no request of any kind |
+| Commands | no | no process is started |
+| Dynamic module loading | yes | `index.js` (`importFromDsh`) loads `zod`, `@deepseek-ai/dsh-tools` and `@deepseek-ai/schemastery` from the DSH installation that runs the plugin (a synchronous `require` of an ES module fails on Node 22). Nothing is downloaded and no code is evaluated from text (`eval` / `new Function` are not used). The plugin fails to load if DSH does not provide them |
+
+It adds one read-only tool (`runtime_health`) and, when `liveAlerts` is on, appends short alerts to
+tool results. It never blocks or modifies a tool call.
+
+## Verification
+
+Checked on a disposable profile (`DSH_HOME` pointing at a temporary folder, profile cloned with
+`dsh <name> --from-default-profile web`, so the real profile is never touched):
+
+```sh
+npm pack
+dsh plugin --profile t add file:$PWD/dsh-agent-flight-recorder-0.1.0.tgz   # install
+dsh --profile t --no-open --port 3095                                       # start: plugin loads, no error
+dsh plugin --profile t remove dsh-agent-flight-recorder                      # uninstall
+```
+
+`npm test` runs standalone tests with no DSH installation needed, except the load test, which
+skips when DSH is absent.
 
 ## Develop
 
