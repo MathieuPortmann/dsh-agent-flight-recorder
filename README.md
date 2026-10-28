@@ -81,7 +81,7 @@ Checked on a disposable profile (`DSH_HOME` pointing at a temporary folder, prof
 
 ```sh
 npm pack
-dsh plugin --profile t add file:$PWD/dsh-agent-flight-recorder-0.1.0.tgz   # install
+dsh plugin --profile t add file:$PWD/dsh-agent-flight-recorder-0.1.1.tgz   # install
 dsh --profile t --no-open --port 3095                                       # start: plugin loads, no error
 dsh plugin --profile t remove dsh-agent-flight-recorder                      # uninstall
 ```

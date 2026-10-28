@@ -1,6 +1,6 @@
 {
   "name": "dsh-agent-flight-recorder",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Live runtime health for DeepSeek Harness agents: loop detection, runtime_health tool, Runtime Health panel and a per-turn health summary for the user and the model.",
   "type": "module",
   "license": "MIT",

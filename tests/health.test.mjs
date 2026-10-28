@@ -43,6 +43,13 @@ test('same tool with different arguments raises a warning at 4 and critical at 6
   assert.equal(report(replay(turn(calls(6))), DEFAULTS).status, 'critical');
 });
 
+test('reading different web pages is research, the same page again is a repeat', () => {
+  const pages = Array.from({ length: 6 }, (_, i) => call('web_read', { url: `https://a.org/p${i}` }));
+  assert.equal(report(replay(turn(pages)), DEFAULTS).status, 'healthy');
+  const same = Array.from({ length: 4 }, () => call('web_read', { url: 'https://a.org/same' }));
+  assert.equal(evaluate(replay(turn([...pages, ...same])), DEFAULTS).reasons[0].code, 'sameTool');
+});
+
 test('the same error repeated is flagged even when numbers differ', () => {
   const calls = [call('bash', { c: 'a' }, { error: true, text: 'line 12 failed' }), call('bash', { c: 'b' }, { error: true, text: 'line 99 failed' })];
   const r = report(replay(turn(calls)), DEFAULTS);
